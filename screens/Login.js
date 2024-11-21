@@ -24,12 +24,16 @@ import {
 } from './../components/styles'
 import { View } from "react-native";
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
+import KeyboardAvoidingWrapper from "./KeyboardAvoidingWrapper";
+import axios from 'axios';
+
 const {brand, darkLight, primary} = Colors
 
-const Login = () => {
+const Login = ({navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
     return(
-        <StyledContainer>
+        <KeyboardAvoidingWrapper>
+            <StyledContainer>
             <StatusBar style="dark" />
             <InnerContainer>
                 <PageLogo resizeMode="cover" source={require('./../assets/img/tuan.png')}></PageLogo>
@@ -40,6 +44,7 @@ const Login = () => {
                     initialValues={{email:'',password:''}}
                     onSubmit={(values)=>{
                         console.log(values);
+                        navigation.navigate("Welcome"); 
                     }}  
                     >
                     {({handleChange, handleBlur, handleSubmit, values})=>(<StyledFormArea>
@@ -78,7 +83,7 @@ const Login = () => {
                         </StyledButton>
                         <ExtraView>
                             <ExtraText>Bạn chưa có tài khoản? </ExtraText>
-                            <TextLink>
+                            <TextLink onPress={() => navigation.navigate("Signup")}>
                                 <TextLinkContent>Đăng ký</TextLinkContent>
                             </TextLink>
                         </ExtraView>
@@ -86,6 +91,7 @@ const Login = () => {
                 </Formik>
             </InnerContainer>
         </StyledContainer>
+        </KeyboardAvoidingWrapper>
     )
 }
 
