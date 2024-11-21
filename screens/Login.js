@@ -27,6 +27,8 @@ import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
 import KeyboardAvoidingWrapper from "./KeyboardAvoidingWrapper";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {  getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -38,7 +40,9 @@ const firebaseConfig = {
   appId: "1:343164681416:web:25185d192111877b8df9fd",
 };
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const auth = getAuth(app,{
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+  });
 
 const {brand, darkLight, primary} = Colors;
 

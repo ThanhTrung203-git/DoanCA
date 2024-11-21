@@ -71,7 +71,7 @@ const Signup = ({ navigation }) => {
     const { fullname, email, password, comfirmpassword } = values;
 
     if (password !== comfirmpassword) {
-        setMessage("Passwords do not match!");
+        setMessage("Mật khẩu và xác nhận mật khẩu không trung khớp");
         return;
       }
   
@@ -146,7 +146,7 @@ const Signup = ({ navigation }) => {
                 />
 
                 <MyTextInput
-                  label="Password"
+                  label="Mật khẩu"
                   icon="lock"
                   placeholder="* * * * *"
                   placeholderTextColor={darkLight}
