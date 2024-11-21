@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { StatusBar } from "expo-status-bar";
 import { Formik } from "formik";
 import {
@@ -25,12 +25,38 @@ import {
 import { View } from "react-native";
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
 import KeyboardAvoidingWrapper from "./KeyboardAvoidingWrapper";
-import axios from 'axios';
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-const {brand, darkLight, primary} = Colors
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCs8ZFSFw_dfyByJlshJcv8SZKtYEbjJ5U",
+  authDomain: "steproject-ec674.firebaseapp.com",
+  projectId: "steproject-ec674",
+  storageBucket: "steproject-ec674.appspot.com",
+  messagingSenderId: "343164681416",
+  appId: "1:343164681416:web:25185d192111877b8df9fd",
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const {brand, darkLight, primary} = Colors;
 
 const Login = ({navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
+    const [message, setMessage] = useState("");
+
+    const handleLogin = async (values) => {
+        const { email, password } = values;
+    
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+          setMessage("Login successful!");
+          navigation.navigate("Welcome");
+        } catch (error) {
+          setMessage(`Error: ${error.message}`);
+        }
+      };
     return(
         <KeyboardAvoidingWrapper>
             <StyledContainer>
@@ -42,10 +68,7 @@ const Login = ({navigation}) => {
 
                 <Formik
                     initialValues={{email:'',password:''}}
-                    onSubmit={(values)=>{
-                        console.log(values);
-                        navigation.navigate("Welcome"); 
-                    }}  
+                    onSubmit={(handleLogin)}
                     >
                     {({handleChange, handleBlur, handleSubmit, values})=>(<StyledFormArea>
                         <MyTextInput
@@ -72,7 +95,7 @@ const Login = ({navigation}) => {
                             hidePassword={hidePassword}
                             setHidePassword={setHidePassword}
                         />
-                        <MsgBox>...</MsgBox>
+                        <MsgBox>{message}</MsgBox>
                         <StyledButton onPress={handleSubmit}>
                             <ButtonText>Đăng nhập</ButtonText>
                         </StyledButton>

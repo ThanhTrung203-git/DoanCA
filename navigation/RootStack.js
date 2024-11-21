@@ -8,7 +8,9 @@ import { Colors } from '../components/styles';
 
 const Stack = createNativeStackNavigator();
 
-const RootStack = ()=>{
+
+
+const RootStack = ({email, setEmail, password, setPassWord, isLogin, setIsLogin, handleAuthentication})=>{
     return(
         <NavigationContainer>
             <Stack.Navigator
