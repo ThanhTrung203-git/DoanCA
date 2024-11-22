@@ -14,9 +14,8 @@ import {
   Line,
 } from './../components/styles';
 
-const Welcome = () => {
-
-
+const Welcome = ({navigation, route}) => {
+  const {name, email}= route.params;
   const clearLogin = () => {
     AsyncStorage.removeItem('flowerCribCredentials')
       .then(() => {
@@ -33,14 +32,14 @@ const Welcome = () => {
 
         <WelcomeContainer>
           <PageTitle welcome={true}>Welcome! Buddy</PageTitle>
-          <SubTitle welcome={true}>Olga Simpson</SubTitle>
-          <SubTitle welcome={true}>olgasimp@gmail.com</SubTitle>
+          <SubTitle welcome={true}>{name||'Olga Simpson'}</SubTitle>
+          <SubTitle welcome={true}>{email||'olgasimp@gmail.com'}</SubTitle>
 
           <StyledFormArea>
             <Avatar resizeMode="cover" source={'./../assets/img/tuan.png'} />
 
             <Line />
-            <StyledButton /*onPress={clearLogin}*/>
+            <StyledButton onPress={() => navigation.navigate("Login")}>
               <ButtonText>Logout</ButtonText>
             </StyledButton>
           </StyledFormArea>

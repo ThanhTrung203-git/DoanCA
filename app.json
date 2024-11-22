@@ -2,6 +2,7 @@
   "expo": {
     "name": "STE",
     "slug": "STE",
+    "scheme": "STE",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,13 +14,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ste.learnenglish"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package":"com.ste.learnenglish"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -74,7 +74,6 @@ const Signup = ({ navigation }) => {
         setMessage("Mật khẩu và xác nhận mật khẩu không trung khớp");
         return;
       }
-  
       try {
         await createUserWithEmailAndPassword(auth, email, password);
         setMessage("Registration successful! Please log in.");

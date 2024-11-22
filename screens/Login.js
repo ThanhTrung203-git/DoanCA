@@ -22,13 +22,16 @@ import {
     TextLinkContent,
     Line
 } from './../components/styles'
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
 import KeyboardAvoidingWrapper from "./KeyboardAvoidingWrapper";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import {  getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from "expo-web-browser";
+import { makeRedirectUri } from "expo-auth-session"
 
 // Firebase configuration
 const firebaseConfig = {
@@ -43,24 +46,58 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app,{
     persistence: getReactNativePersistence(ReactNativeAsyncStorage)
   });
-
+// WebBrowser setup
+WebBrowser.maybeCompleteAuthSession();
 const {brand, darkLight, primary} = Colors;
 
 const Login = ({navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState("");
+    const [googleSubmitting, setGoogleSubmitting] = useState(false);
+    const [userInfo, setUserInfo] = useState(null);
+    // Google auth request setup
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    iosClientId: "343164681416-6jf22ak73efkv4jdp9jumm9asnld0988.apps.googleusercontent.com",
+    androidClientId: "343164681416-84oos380pkvml0e12vklhskjtg1kbmud.apps.googleusercontent.com",
+    scopes: ["profile", "email"],
+    redirectUri: makeRedirectUri({ useProxy: true }),
+  });
 
-    const handleLogin = async (values) => {
-        const { email, password } = values;
-    
-        try {
-          await signInWithEmailAndPassword(auth, email, password);
-          setMessage("Login successful!");
-          navigation.navigate("Welcome");
-        } catch (error) {
-          setMessage(`Error: ${error.message}`);
-        }
-      };
+  useEffect(() => {
+    console.log("Response:", response);
+    if (response?.type === "success") {
+      const { authentication } = response;
+      fetchUserInfo(authentication.accessToken);
+    } else if (response?.type === "error") {
+      console.error("Google Sign-In Error:", response.error);
+      setMessage("Đăng nhập với Google thất bại. Vui lòng kiểm tra cấu hình.");
+    }
+  }, [response]);
+
+  const fetchUserInfo = async (accessToken) => {
+    try {
+      setGoogleSubmitting(true);
+      const res = await fetch("https://www.googleapis.com/userinfo/v2/me", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const user = await res.json();
+      setUserInfo(user);
+      setMessage("Đăng nhập với Google thành công", "SUCCESS");
+      setTimeout(() => {
+        navigation.navigate("Welcome", {
+          email: user.email,
+          name: user.name,
+          photoUrl: user.picture,
+        });
+      }, 1000);
+    } catch (error) {
+      console.error(error);
+      setMessage("Lỗi đường truyền. Vui lòng kiểm tra kết nối Internet");
+    } finally {
+      setGoogleSubmitting(false);
+    }
+  };
+
     return(
         <KeyboardAvoidingWrapper>
             <StyledContainer>
@@ -72,9 +109,16 @@ const Login = ({navigation}) => {
 
                 <Formik
                     initialValues={{email:'',password:''}}
-                    onSubmit={(handleLogin)}
+                    onSubmit={(values,{setSubmitting}) => {
+                        if(values.email =='' || values.password == ''){
+                            setMessage('Vui lòng nhập đầy đủ!');
+                            setSubmitting(false);
+                        }else{
+                            handleLogin(values,setSubmitting);
+                        }
+                    }}
                     >
-                    {({handleChange, handleBlur, handleSubmit, values})=>(<StyledFormArea>
+                    {({handleChange, handleBlur, handleSubmit, values, isSubmitting})=>(<StyledFormArea>
                         <MyTextInput
                             label="Địa chỉ Email"
                             icon={"mail"}
@@ -100,14 +144,27 @@ const Login = ({navigation}) => {
                             setHidePassword={setHidePassword}
                         />
                         <MsgBox>{message}</MsgBox>
-                        <StyledButton onPress={handleSubmit}>
+                        {!isSubmitting &&<StyledButton onPress={handleSubmit}>
                             <ButtonText>Đăng nhập</ButtonText>
-                        </StyledButton>
+                        </StyledButton>}
+
+                        {isSubmitting &&<StyledButton disabled={true}>
+                            <ActivityIndicator size="large" color={primary} />
+                        </StyledButton>}
                         <Line />
-                        <StyledButton google={true} onPress={handleSubmit}>
+                        
+                        {!googleSubmitting &&(
+                            <StyledButton google={true} onPress={() => promptAsync()}>
                             <Fontisto name="google" color={primary} size={20}/>
                             <ButtonText google={true}>Đăng nhập với Google</ButtonText>
                         </StyledButton>
+                        )}
+
+                        {googleSubmitting &&(
+                            <StyledButton google={true} disabled={true}>
+                            <ActivityIndicator size="large" color={primary} />
+                            </StyledButton>
+                        )}
                         <ExtraView>
                             <ExtraText>Bạn chưa có tài khoản? </ExtraText>
                             <TextLink onPress={() => navigation.navigate("Signup")}>
