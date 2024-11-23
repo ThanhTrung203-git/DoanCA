@@ -20,9 +20,10 @@ import {
     ExtraView,
     TextLink,
     TextLinkContent,
-    Line
+    Line,
+    styles
 } from './../components/styles'
-import { View } from "react-native";
+import { Modal, Text, TouchableOpacity, View } from "react-native";
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
 import KeyboardAvoidingWrapper from "./KeyboardAvoidingWrapper";
 import { initializeApp } from "firebase/app";
@@ -49,18 +50,31 @@ const {brand, darkLight, primary} = Colors;
 const Login = ({navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState("");
+    // const [messageType, setMessageType] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
+    const [modalType, setModalType] = useState("");
 
     const handleLogin = async (values) => {
         const { email, password } = values;
-    
-        try {
-          await signInWithEmailAndPassword(auth, email, password);
-          setMessage("Login successful!");
-          navigation.navigate("Welcome");
-        } catch (error) {
-          setMessage(`Error: ${error.message}`);
-        }
-      };
+
+            try {
+            await signInWithEmailAndPassword(auth, email, password);
+            //   setMessage("Login successful!");
+                setModalMessage("Đăng nhập thành công!");
+                setModalType("success");
+                setModalVisible(true);
+
+                setTimeout(() => {
+                    navigation.navigate("Welcome");
+                }, 2000);
+            } catch (error) {
+            //   setMessage(`Error: ${error.message}`);
+                setModalMessage("Vui lòng kiểm tra lại tài khoản và mật khẩu");
+                setModalType("error");
+                setModalVisible(true);
+            }
+    };
     return(
         <KeyboardAvoidingWrapper>
             <StyledContainer>
@@ -117,6 +131,36 @@ const Login = ({navigation}) => {
                     </StyledFormArea>)}
                 </Formik>
             </InnerContainer>
+            <Modal style={{height:"100%"}}
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <View style={styles.modalContainer}>
+                    <View
+                        style={[
+                        styles.modalContent,
+                        { backgroundColor: modalType === "success" ? "#d4edda" : "#f8d7da" },
+                        ]}
+                    >
+                        <Text
+                        style={[
+                            styles.modalText,
+                            { color: modalType === "success" ? "#155724" : "#721c24" },
+                        ]}
+                        >
+                        {modalMessage}
+                        </Text>
+                        <TouchableOpacity
+                        style={[styles.button, { backgroundColor: "#007bff" }]}
+                        onPress={() => setModalVisible(false)}
+                        >
+                        <Text style={styles.buttonText}>OK</Text>
+                        </TouchableOpacity>
+                    </View>
+                    </View>
+                </Modal>
         </StyledContainer>
         </KeyboardAvoidingWrapper>
     )

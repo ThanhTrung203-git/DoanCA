@@ -32,9 +32,9 @@ const Welcome = () => {
         <WelcomeImage resizeMode="cover" source={require('./../assets/img/expo-bg2.png')} />
 
         <WelcomeContainer>
-          <PageTitle welcome={true}>Welcome! Buddy</PageTitle>
-          <SubTitle welcome={true}>Olga Simpson</SubTitle>
-          <SubTitle welcome={true}>olgasimp@gmail.com</SubTitle>
+          <PageTitle welcome={true}>Welcome!</PageTitle>
+          <SubTitle welcome={true}>DACN</SubTitle>
+          <SubTitle welcome={true}>test1@gmail.com</SubTitle>
 
           <StyledFormArea>
             <Avatar resizeMode="cover" source={'./../assets/img/tuan.png'} />
