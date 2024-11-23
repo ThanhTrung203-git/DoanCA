@@ -33,7 +33,6 @@ const Welcome = ({navigation, route}) => {
         <WelcomeContainer>
           <PageTitle welcome={true}>Welcome!</PageTitle>
           <SubTitle welcome={true}>DACN</SubTitle>
-          <SubTitle welcome={true}>test1@gmail.com</SubTitle>
 
           <StyledFormArea>
             <Avatar resizeMode="cover" source={'./../assets/img/tuan.png'} />

@@ -138,7 +138,7 @@ const Login = ({navigation}) => {
             <StyledContainer>
             <StatusBar style="dark" />
             <InnerContainer>
-                <PageLogo resizeMode="cover" source={require('./../assets/img/tuan.png')}></PageLogo>
+                <PageLogo resizeMode="cover" source={require('./../assets/img/BannerLE.png')}></PageLogo>
                 <PageTitle>Learn English</PageTitle>
                 <SubTitle>Đăng nhập tài khoản</SubTitle>
 
@@ -153,7 +153,7 @@ const Login = ({navigation}) => {
                         }
                     }}
                     >
-                    {({handleChange, handleBlur, handleSubmit, values,googleSubmitting, isSubmitting})=>(<StyledFormArea>
+                    {({handleChange, handleBlur,handleSubmit, values,googleSubmitting, isSubmitting})=>(<StyledFormArea>
                         <MyTextInput
                             label="Địa chỉ Email"
                             icon={"mail"}
@@ -179,13 +179,13 @@ const Login = ({navigation}) => {
                             setHidePassword={setHidePassword}
                         />
                         <MsgBox>{message}</MsgBox>
-                        {!isSubmitting &&<StyledButton onPress={handleSubmit}>
+                        { <StyledButton onPress={handleSubmit}>
                             <ButtonText>Đăng nhập</ButtonText>
                         </StyledButton>}
 
-                        {isSubmitting &&<StyledButton disabled={true}>
+                        {/*{isSubmitting &&<StyledButton disabled={true}>
                             <ActivityIndicator size="large" color={primary} />
-                        </StyledButton>}
+                        </StyledButton>}*/}
                         <Line />
                         
                         {!googleSubmitting &&(
