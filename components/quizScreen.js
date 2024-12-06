@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import axios from 'axios';
 
-const QuizScreen = ({ route }) => {
+const QuizScreen = ({ navigation, route }) => {
   const { topicId } = route.params;
   const [quizData, setQuizData] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -14,7 +14,7 @@ const QuizScreen = ({ route }) => {
 
   useEffect(() => {
     axios
-      .get(`http://192.168.43.118/QuizAPI/getQuestion.php?chude_id=${topicId}`)
+      .get(`http://10.0.2.2/QuizAPI/getQuestion.php?chude_id=${topicId}`)
       .then((response) => {
         setQuizData(response.data); // Lấy dữ liệu từ API
       })
@@ -73,8 +73,19 @@ const QuizScreen = ({ route }) => {
 
   if (quizData.length === 0 || quizFinished) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.resultText}>Quiz Finished! Your score: {score}/{quizData.length}</Text>
+      <View style={styles.resultContainer}>
+        <View style={styles.scoreCircle}>
+          <Text style={styles.scoreText}>Your Score</Text>
+          <Text style={styles.finalScore}>{score}/{quizData.length}</Text>
+        </View>
+        <Text style={styles.congratsText}>Congratulation</Text>
+        <Text style={styles.messageText}>Great job! You Did It</Text>
+        <TouchableOpacity style={styles.button} onPress={() => console.log('Share clicked')}>
+          <Text style={styles.buttonText}>Share</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Welcome")}>
+          <Text style={styles.buttonText}>Back to Home</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -163,6 +174,57 @@ const styles = StyleSheet.create({
   resultText: {
     fontSize: 20,
     color: '#333',
+    textAlign: 'center',
+  },
+  resultContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f4f6f9',
+  },
+  scoreCircle: {
+    backgroundColor: '#0F469A',
+    borderRadius: 100,
+    width: 150,
+    height: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  scoreText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  finalScore: {
+    color: '#fff',
+    fontSize: 32,
+    fontWeight: 'bold',
+  },
+  congratsText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+  },
+  messageText: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 30,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#0F469A',
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+    width: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
     textAlign: 'center',
   },
 });

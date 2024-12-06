@@ -4,9 +4,17 @@ import { Audio } from "expo-av";
 import axios from "axios";
 
 const VocabularyDetailScreen = ({ route }) => {
-  const { topicWord } = route.params;
+  const { topicWord } = route.params || {};
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  if (!topicWord) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>No topic provided.</Text>
+      </View>
+    );
+  }
 
   useEffect(() => {
     const fetchData = async () => {

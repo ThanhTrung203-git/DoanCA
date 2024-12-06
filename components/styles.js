@@ -53,7 +53,7 @@ export const Avatar = styled.Image`
 `;
 
 export const WelcomeImage = styled.Image`
-  height: 50%;
+  height: 100%;
   min-width: 100%;
 `;
 

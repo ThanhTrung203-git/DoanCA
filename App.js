@@ -7,6 +7,8 @@ import RootStack from './navigation/RootStack';
 import QuizScreen from './components/quizScreen';
 import TopicList from './components/topicScreen';
 import { NavigationContainer } from '@react-navigation/native';
+import VocabularyDetailScreen from './screens/VocabularyDetailScreen';
+import Welcome from './screens/Welcome';
 
 export default function App() {
   return (
