@@ -1,19 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet,ImageBackground } from "react-native";
 import { Avatar, Button, Card, Title, Paragraph } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 
 
-const QuizDashboard = ({navigation}) => {
+const Welcome = ({email ,navigation}) => {
+  const [userData, setUserData] = useState(null); // State để lưu thông tin người dùng
+  const [loading, setLoading] = useState(true);   // State để kiểm soát loading
+
+  if (!email) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Error: No email provided</Text>
+      </View>
+    );
+  }
+
+  console.log(email);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`http://192.168.1.161/MobileAPI/getUserData.php?email=${email}`);
+        const data = await response.json();
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [email]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Avatar.Image size={60} source={require('../assets/img/tuan.png')} />
+        {/* Nếu có ảnh người dùng, hiển thị ảnh đó, nếu không thì hiển thị ảnh mặc định */}
+        <Avatar.Image 
+          size={60} 
+          source={userData.img ? { uri: userData.imageUrl } : require('../assets/img/tuan.png')} 
+        />
         <View style={styles.headerInfo}>
-          <Text style={styles.name}>Tui la Tuan</Text>
-          <Text style={styles.userId}>ID-1809</Text>
+          <Text style={styles.name}>{userData.fullname}</Text>
+          <Text style={styles.userId}>ID-{userData.id}</Text>
         </View>
         <View style={styles.points}>
           <Icon name="diamond" size={20} color="#007bff" />
@@ -25,7 +66,7 @@ const QuizDashboard = ({navigation}) => {
       <ImageBackground
   source={require('../assets/img/trophybackground.jpg')} // Đường dẫn tới ảnh
   style={styles.bannerBackground}
-  imageStyle={{ borderRadius: 10 }} // Để ảnh có viền bo tròn giống Card
+  imageStyle={{ borderRadius: 10 }} 
 >
   <Card style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: 10 }}>
     <Card.Content>
@@ -74,7 +115,7 @@ const QuizDashboard = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f8f9fa", padding: 10, paddingTop: 20, marginTop:20 },
+  container: { flex: 1, backgroundColor: "#f8f9fa", padding: 10, paddingTop: 20, marginTop:50 },
   header: { flexDirection: "row", alignItems: "center", marginBottom: 20 },
   headerInfo: { flex: 1, marginLeft: 10 },
   name: { fontSize: 20, fontWeight: "bold" },
@@ -100,4 +141,4 @@ const styles = StyleSheet.create({
   textContent:{color: '#ABC2E3', marginBottom: 10},
 });
 
-export default QuizDashboard;
+export default Welcome;

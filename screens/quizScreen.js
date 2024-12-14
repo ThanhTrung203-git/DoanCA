@@ -14,9 +14,9 @@ const QuizScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     axios
-      .get(`http://10.0.2.2/QuizAPI/getQuestion.php?chude_id=${topicId}`)
+      .get(`http://10.0.2.2/MobileAPI/getQuestion.php?chude_id=${topicId}`)
       .then((response) => {
-        setQuizData(response.data); // Lấy dữ liệu từ API
+        setQuizData(response.data);
       })
       .catch((error) => {
         console.log('Lỗi khi gọi API:', error);

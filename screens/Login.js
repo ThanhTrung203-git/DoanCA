@@ -54,6 +54,7 @@ const Login = ({navigation}) => {
     const [modalVisible,setModalVisible] = useState("");
     const [modalMessage, setModalMessage] = useState("");
     const [modalType, setModalType] = useState("");
+    const [userData, setUserData] = useState("");
     const [googleSubmitting, setGoogleSubmitting] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
 
@@ -115,24 +116,26 @@ const Login = ({navigation}) => {
     }
   };
 
-    const handleLogin = async (values) => {
-        const { email, password } = values;
-    
-        try {
-          await signInWithEmailAndPassword(auth, email, password);
-          setModalMessage("Đăng nhập thành công!");
-          setModalType("success");
-          setModalVisible(true);
-          setTimeout(() => {
-            setModalVisible(false);
-            navigation.navigate("Welcome");
-          }, 1500);
-        } catch (error) {
-            setModalMessage("Tài khoản hoặc mật khẩu của bạn không chính xác!");
-            setModalType("error");
+  const handleLogin = async (values) => {
+    const { email, password } = values;
+
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+            setModalMessage("Đăng nhập thành công!");
+            setModalType("success");
             setModalVisible(true);
+            setTimeout(() => {
+                setModalVisible(false);
+                navigation.navigate("Welcome", { email });
+            }, 1500);
         }
-      };
+     catch (error) {
+        setModalMessage("Tài khoản hoặc mật khẩu của bạn không chính xác!");
+        setModalType("error");
+        setModalVisible(true);
+    }
+};
+
     return(
         <KeyboardAvoidingWrapper>
             <StyledContainer>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Formik } from "formik";
 import {
@@ -21,7 +21,7 @@ import {
   Line,
   ButtonText,
 } from "./../components/styles";
-import { View, TouchableOpacity, ScrollView } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Octicons, Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import KeyboardAvoidingWrapper from "./KeyboardAvoidingWrapper";
@@ -29,10 +29,8 @@ import { initializeApp } from "firebase/app";
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut,
 } from "firebase/auth";
+import axios from "axios";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCs8ZFSFw_dfyByJlshJcv8SZKtYEbjJ5U",
@@ -53,14 +51,17 @@ const Signup = ({ navigation }) => {
   const [hidePassword, setHidePassword] = useState(true);
   const [show, setShow] = useState(false);
   const [date, setDate] = useState(new Date(2000, 0, 1));
-  const [dob, setDob] = useState("");
   const [message, setMessage] = useState("");
+  const [dob, setDob] = useState("");
 
-  const onChange = (event, selectedDate) => {
+  const onChange = (event, selectedDate, setFieldValue) => {
     const currentDate = selectedDate || date;
     setShow(false);
     setDate(currentDate);
-    setDob(currentDate.toISOString().split("T")[0]); // Format as YYYY-MM-DD
+    if (selectedDate) {
+      setDate(selectedDate);
+      setDob(selectedDate.toISOString().split("T")[0]);
+    }
   };
 
   const showDatePicker = () => {
@@ -68,19 +69,46 @@ const Signup = ({ navigation }) => {
   };
 
   const handleSignup = async (values) => {
-    const { fullname, email, password, comfirmpassword } = values;
+    const { fullname, email, dateOfBirth, password, comfirmpassword } = values;
 
+    // Kiểm tra nếu ngày sinh chưa được nhập
+    if (!dob) {
+      setMessage("Vui lòng chọn ngày sinh.");
+      return;
+    }
+
+    // Kiểm tra mật khẩu
     if (password !== comfirmpassword) {
-        setMessage("Mật khẩu và xác nhận mật khẩu không trung khớp");
+      setMessage("Mật khẩu và xác nhận mật khẩu không khớp.");
+      return;
+    }
+
+    try {
+      // Đăng ký người dùng với Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      if (!user || !user.uid) {
+        setMessage("Lỗi đăng ký: Không thể lấy thông tin người dùng.");
         return;
       }
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        setMessage("Registration successful! Please log in.");
+
+      // Lưu dữ liệu vào MySQL thông qua backend
+      const response = await axios.post("http://10.0.2.2/MobileAPI/register.php", {
+        fullname,
+        email,
+        dob, 
+        uid: user.uid,
+      });
+
+
+      if (response.status === 200) {
+        setMessage("Đăng ký thành công!");
         navigation.navigate("Login");
-      } catch (error) {
-        setMessage(`Error: ${error.message}`);
       }
+    } catch (error) {
+      setMessage(`Lỗi: ${error.message}`);
+    }
   };
 
   return (
@@ -110,7 +138,7 @@ const Signup = ({ navigation }) => {
             }}
             onSubmit={handleSignup}
           >
-            {({ handleChange, handleBlur, handleSubmit, values }) => (
+            {({ handleChange, handleBlur, handleSubmit, values, setFieldValue }) => (
               <StyledFormArea>
                 <MyTextInput
                   label="Họ và tên"
@@ -145,7 +173,7 @@ const Signup = ({ navigation }) => {
                 />
 
                 <MyTextInput
-                  label="Mật khẩu"
+                  label="Mật khẩu"
                   icon="lock"
                   placeholder="* * * * *"
                   placeholderTextColor={darkLight}

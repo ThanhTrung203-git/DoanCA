@@ -9,7 +9,7 @@ const TopicSelectionScreen = ({ navigation }) => {
 
   // Gọi API để lấy dữ liệu chủ đề
   useEffect(() => {
-    axios.get('http://10.0.2.2/QuizAPI/getTopic.php')
+    axios.get('http://10.0.2.2/MobileAPI/getTopic.php')
       .then(response => {
         setTopics(response.data); // Lưu dữ liệu vào state
       })
