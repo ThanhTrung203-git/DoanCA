@@ -9,10 +9,13 @@ import TopicList from './screens/topicScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import VocabularyDetailScreen from './screens/VocabularyDetailScreen';
 import Welcome from './screens/Welcome';
+import { AuthContext, AuthProvider } from './components/AuthContext';
 
 export default function App() {
   return (
-    <RootStack/>
+    <AuthProvider>
+      <RootStack/>
+    </AuthProvider>
   );
 }
 

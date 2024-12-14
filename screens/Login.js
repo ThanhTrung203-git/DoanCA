@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import { StatusBar } from "expo-status-bar";
 import { Formik } from "formik";
 import {
@@ -33,6 +33,7 @@ import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from "expo-web-browser";
 import { makeRedirectUri } from "expo-auth-session"
+import { AuthContext } from "../components/AuthContext";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -48,6 +49,8 @@ const auth = getAuth(app);
 WebBrowser.maybeCompleteAuthSession();
 const {brand, darkLight, primary} = Colors;
 
+
+
 const Login = ({navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState("");
@@ -57,6 +60,7 @@ const Login = ({navigation}) => {
     const [userData, setUserData] = useState("");
     const [googleSubmitting, setGoogleSubmitting] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
+    const { setEmail } = useContext(AuthContext);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     iosClientId: "343164681416-84oos380pkvml0e12vklhskjtg1kbmud.apps.googleusercontent.com",
@@ -121,12 +125,13 @@ const Login = ({navigation}) => {
 
     try {
         await signInWithEmailAndPassword(auth, email, password);
+            setEmail(email);
             setModalMessage("Đăng nhập thành công!");
             setModalType("success");
             setModalVisible(true);
             setTimeout(() => {
                 setModalVisible(false);
-                navigation.navigate("Welcome", { email });
+                navigation.navigate("Welcome");
             }, 1500);
         }
      catch (error) {

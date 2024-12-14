@@ -17,12 +17,10 @@ const Welcome = ({email ,navigation}) => {
     );
   }
 
-  console.log(email);
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://192.168.1.161/MobileAPI/getUserData.php?email=${email}`);
+        const response = await fetch(`http://10.0.2.2/MobileAPI/getUserData.php?email=${email}`);
         const data = await response.json();
         setUserData(data);
       } catch (error) {

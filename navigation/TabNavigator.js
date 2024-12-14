@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/FontAwesome";
 // import QuizDashboard from "../screens/QuizDashboard";
 import Welcome from '../screens/Welcome';
 import VocabularyScreen from "../screens/VocabularyScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import { AuthContext } from "../components/AuthContext";
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = ({route}) => {
-  const { email } = route.params || {};
+  const { email } = useContext(AuthContext);
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -32,7 +33,7 @@ const TabNavigator = ({route}) => {
       })}
     >
        <Tab.Screen name="Home">
-        {() => <Welcome email={email} />}
+        {({navigation}) => <Welcome email={email} navigation={navigation} />}
       </Tab.Screen>
       <Tab.Screen name="Vocabulary">
         {() => <VocabularyScreen email={email} />}

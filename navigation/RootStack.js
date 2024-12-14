@@ -30,7 +30,6 @@ const RootStack = ({ email, setEmail, password, setPassWord, isLogin, setIsLogin
         }}
         initialRouteName="Login"
       >
-        {/* Các màn hình đăng nhập và giới thiệu */}
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen
@@ -40,8 +39,8 @@ const RootStack = ({ email, setEmail, password, setPassWord, isLogin, setIsLogin
           }}
           name="Welcome"
           component={TabNavigator}
+          initialParams={{ email }} 
         />
-        {/* Các màn hình khác */}
         <Stack.Screen name="TopicSelectionScreen" component={TopicSelectionScreen} />
         <Stack.Screen name="QuizScreen" component={QuizScreen} />
         <Stack.Screen name="VocabularyDetailScreen" component={VocabularyDetailScreen} />
