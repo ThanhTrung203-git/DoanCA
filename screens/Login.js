@@ -161,7 +161,7 @@ const Login = ({navigation}) => {
                         }
                     }}
                     >
-                    {({handleChange, handleBlur,handleSubmit, values,googleSubmitting, isSubmitting})=>(<StyledFormArea>
+                    {({handleChange, handleBlur,handleSubmit, values, isSubmitting})=>(<StyledFormArea>
                         <MyTextInput
                             label="Địa chỉ Email"
                             icon={"mail"}
@@ -190,24 +190,8 @@ const Login = ({navigation}) => {
                         { <StyledButton onPress={handleSubmit}>
                             <ButtonText>Đăng nhập</ButtonText>
                         </StyledButton>}
-
-                        {/*{isSubmitting &&<StyledButton disabled={true}>
-                            <ActivityIndicator size="large" color={primary} />
-                        </StyledButton>}*/}
                         <Line />
                         
-                        {!googleSubmitting &&(
-                            <StyledButton google={true} onPress={() => promptAsync()}>
-                            <Fontisto name="google" color={primary} size={20}/>
-                            <ButtonText google={true}>Đăng nhập với Google</ButtonText>
-                        </StyledButton>
-                        )}
-
-                        {googleSubmitting &&(
-                            <StyledButton google={true} disabled={true}>
-                            <ActivityIndicator size="large" color={primary} />
-                            </StyledButton>
-                        )}
                         <ExtraView>
                             <ExtraText>Bạn chưa có tài khoản? </ExtraText>
                             <TextLink onPress={() => navigation.navigate("Signup")}>

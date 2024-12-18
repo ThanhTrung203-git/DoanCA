@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
 
-const TopicSelectionScreen = ({ navigation }) => {
+
+const WordMatchingTopic = () => {
   const [topics, setTopics] = useState([]); // Lưu trữ danh sách chủ đề
   const [selectedTopic, setSelectedTopic] = useState(null); // Lưu trữ chủ đề đã chọn
 
@@ -37,16 +39,22 @@ const TopicSelectionScreen = ({ navigation }) => {
     10: 'smile-o',
     // Thêm các topicId và icon tương ứng khác tại đây
   };
+  const navigation = useNavigation(); // Sử dụng hook này nếu navigation không được truyền trực tiếp
 
+  const handlePress = (topicId) => {
+    navigation.navigate('WordMatchingGame', { topicId });
+  };
   // Hiển thị mỗi item trong danh sách chủ đề
   const renderTopicItem = ({ item, index }) => {
     const topicIcon = topicIcons[item.id] || 'star';
+
     return (
       <TouchableOpacity
         style={[styles.topicButton, { backgroundColor: topicColors[index % topicColors.length] }]}
         onPress={() => {
+          // Chuyển topicId đến VocabularyDetailScreen
           setSelectedTopic(item.id);
-          navigation.navigate('QuizScreen', { topicId: item.id }); // Chuyển topicId đến QuizScreen
+          handlePress(item.id);
         }}
       >
         <Icon name={topicIcon} size={30} color="#fff" style={styles.icon} />
@@ -104,4 +112,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TopicSelectionScreen;
+export default WordMatchingTopic;

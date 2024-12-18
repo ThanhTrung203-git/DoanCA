@@ -39,7 +39,7 @@ const TabNavigator = ({route}) => {
         {() => <VocabularyScreen email={email} />}
       </Tab.Screen>
       <Tab.Screen name="Profile">
-        {() => <ProfileScreen email={email} />}
+        {({navigation}) => <ProfileScreen email={email} navigation={navigation} />}
       </Tab.Screen>
     </Tab.Navigator>
   );

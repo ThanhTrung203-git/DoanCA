@@ -14,7 +14,7 @@ const QuizScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     axios
-      .get(`http://10.0.2.2/MobileAPI/getQuestion.php?chude_id=${topicId}`)
+      .get(`http://10.0.2.2/getQuestion.php?chude_id=${topicId}`)
       .then((response) => {
         setQuizData(response.data);
       })
@@ -80,14 +80,14 @@ const QuizScreen = ({ navigation, route }) => {
         </View>
         <Text style={styles.congratsText}>Congratulation</Text>
         <Text style={styles.messageText}>Great job! You Did It</Text>
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Share clicked')}>
-          <Text style={styles.buttonText}>Share</Text>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+          <Text style={styles.buttonText}>Choose another topic</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Welcome")}>
           <Text style={styles.buttonText}>Back to Home</Text>
         </TouchableOpacity>
       </View>
-    );
+    ); 
   }
 
   const currentQuestion = quizData[currentQuestionIndex];

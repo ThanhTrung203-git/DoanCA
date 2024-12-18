@@ -71,20 +71,17 @@ const Signup = ({ navigation }) => {
   const handleSignup = async (values) => {
     const { fullname, email, dateOfBirth, password, comfirmpassword } = values;
 
-    // Kiểm tra nếu ngày sinh chưa được nhập
     if (!dob) {
       setMessage("Vui lòng chọn ngày sinh.");
       return;
     }
 
-    // Kiểm tra mật khẩu
     if (password !== comfirmpassword) {
       setMessage("Mật khẩu và xác nhận mật khẩu không khớp.");
       return;
     }
 
     try {
-      // Đăng ký người dùng với Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
@@ -93,8 +90,7 @@ const Signup = ({ navigation }) => {
         return;
       }
 
-      // Lưu dữ liệu vào MySQL thông qua backend
-      const response = await axios.post("http://10.0.2.2/MobileAPI/register.php", {
+      const response = await axios.post("http://10.0.2.2/register.php", {
         fullname,
         email,
         dob, 
@@ -107,7 +103,7 @@ const Signup = ({ navigation }) => {
         navigation.navigate("Login");
       }
     } catch (error) {
-      setMessage(`Lỗi: ${error.message}`);
+      setMessage(`${error.message}`);
     }
   };
 

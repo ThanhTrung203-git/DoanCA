@@ -1,13 +1,43 @@
-import React from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { useFocusEffect } from "@react-navigation/native";
 
-const ProfileScreen = ({ navigation }) => {
-  // Thông tin user mẫu
-  const user = {
-    name: "Nguyen Van A",
-    email: "nguyenvana@example.com",
+const ProfileScreen = ({ email, navigation, route }) => {
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch(`http://10.0.2.2/getUserData.php?email=${email}`);
+      const data = await response.json();
+      setUserData(data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData();
+    }, [email])
+  );
+
+  useEffect(() => {
+    if (route?.params?.updatedUserData) {
+      setUserData(route.params.updatedUserData);
+    }
+  }, [route?.params?.updatedUserData]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   // Hàm xử lý khi nhấn nút Logout
   const handleLogout = () => {
@@ -16,25 +46,24 @@ const ProfileScreen = ({ navigation }) => {
       { text: "Logout", onPress: () => navigation.replace("Login") },
     ]);
   };
+  
 
   return (
     <View style={styles.container}>
-      {/* Hiển thị tên và email */}
       <View style={styles.userInfo}>
-        <Icon name="user-circle" size={80} color="#007bff" />
-        <Text style={styles.name}>{user.name}</Text>
-        <Text style={styles.email}>{user.email}</Text>
+        <Icon name="user-circle" size={80} color="#007bff"  />
+        <Text style={styles.name}>{userData.fullname || "No name"}</Text>
+        <Text style={styles.email}>{userData.email || "No email"}</Text>
       </View>
 
-      {/* Các tùy chọn trong Profile */}
-      <TouchableOpacity style={styles.option} onPress={() => {}}>
+      <TouchableOpacity style={styles.option} onPress={() => {navigation.navigate("EditProfileScreen", { userData })}}>
         <Icon name="user" size={20} color="#007bff" />
         <Text style={styles.optionText}>My Profile</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.option} onPress={() => {}}>
+      <TouchableOpacity style={styles.option} onPress={() => {navigation.navigate("ChangePasswordScreen", { userData })}}>
         <Icon name="info-circle" size={20} color="#007bff" />
-        <Text style={styles.optionText}>About Us</Text>
+        <Text style={styles.optionText}>Change password</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.option} onPress={() => {}}>

@@ -10,6 +10,10 @@ import QuizScreen from '../screens/quizScreen';
 import VocabularyDetailScreen from '../screens/VocabularyDetailScreen';
 import VocabularyScreen from '../screens/VocabularyScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
+import WordMatchingGame from '../screens/WordMatchingGame';
+import WordMatchingTopic from '../screens/WordMatchingTopic';
+import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,7 +34,10 @@ const RootStack = ({ email, setEmail, password, setPassWord, isLogin, setIsLogin
         }}
         initialRouteName="Login"
       >
-        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen options={{
+          headerBackVisible: false
+        }}
+         name="Login" component={Login} />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen
           options={{
@@ -46,6 +53,11 @@ const RootStack = ({ email, setEmail, password, setPassWord, isLogin, setIsLogin
         <Stack.Screen name="VocabularyDetailScreen" component={VocabularyDetailScreen} />
         <Stack.Screen name="VocabularyScreen" component={VocabularyScreen} />
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
+        <Stack.Screen name="WordMatchingGame" component={WordMatchingGame} />
+        <Stack.Screen name="WordMatchingTopic" component={WordMatchingTopic} />
+        <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
